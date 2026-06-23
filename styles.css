@@ -412,3 +412,94 @@
       min-width: 0;
     }
   }
+  .forecast-card {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    background: var(--color-surface);
+    transition: transform 180ms ease, border-color 180ms ease;
+  }
+  
+  .forecast-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .forecast-day {
+    color: var(--color-accent);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  
+  .forecast-icon {
+    font-size: 20px;
+  }
+  
+  .forecast-temps {
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+  }
+  
+  .forecast-high {
+    color: var(--color-text);
+    font-weight: 800;
+  }
+  
+  .forecast-low {
+    color: var(--color-text-muted);
+    font-size: 12px;
+  }
+  
+  .insights-panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+  
+  .insights-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .insights-title {
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  .insight-row {
+    display: grid;
+    grid-template-columns: 70px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 13px;
+  }
+  
+  .insight-row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .insight-time {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+  
+  .insight-condition {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-muted);
+  }
+  
+  .insight-temp {
+    color: var(--color-accent);
+    font-weight: 800;
+  }

@@ -6,6 +6,8 @@ const cityInput = document.querySelector("#cityInput");
 const searchButton = document.querySelector("#searchButton");
 const statusMessage = document.querySelector("#statusMessage");
 const weatherCard = document.querySelector("#weatherCard");
+const forecastStrip = document.querySelector("#forecastStrip");
+const insightsPanel = document.querySelector("#insightsPanel");
 const savedTheme = localStorage.getItem("weather-theme");
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
@@ -173,6 +175,104 @@ function renderCurrentWeather(location, forecast) {
   `;
 }
 
+function formatDayLabel(dateString, index) {
+  if (index === 0) {
+    return "Today";
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    weekday: "short",
+  }).format(new Date(dateString));
+}
+
+function formatHourLabel(dateString) {
+  return new Intl.DateTimeFormat("en", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date(dateString));
+}
+
+function renderForecastStrip(forecast) {
+  const daily = forecast.daily;
+  const forecastDays = daily.time.slice(0, 5);
+
+  forecastStrip.innerHTML = forecastDays
+    .map((date, index) => {
+      const weatherMeta = getWeatherMeta(daily.weather_code[index]);
+      const high = Math.round(daily.temperature_2m_max[index]);
+      const low = Math.round(daily.temperature_2m_min[index]);
+
+      return `
+        <article class="forecast-card ${index === 0 ? "active" : ""}">
+          <span class="forecast-day">${formatDayLabel(date, index)}</span>
+          <span class="forecast-icon" aria-hidden="true">${weatherMeta.icon}</span>
+          <span class="forecast-temps">
+            <span class="forecast-high">${high}°</span>
+            <span class="forecast-low">${low}°</span>
+          </span>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function getTodayHourlyEntries(forecast) {
+  const hourly = forecast.hourly;
+  const currentTime = forecast.current.time;
+  const today = currentTime.slice(0, 10);
+
+  const todayEntries = hourly.time
+    .map((time, index) => ({
+      time,
+      temperature: hourly.temperature_2m[index],
+      weatherCode: hourly.weather_code[index],
+    }))
+    .filter((entry) => entry.time.startsWith(today));
+
+  const currentOrUpcomingIndex = todayEntries.findIndex(
+    (entry) => entry.time >= currentTime
+  );
+
+  if (currentOrUpcomingIndex === -1) {
+    return todayEntries.slice(0, 6);
+  }
+
+  return todayEntries.slice(currentOrUpcomingIndex, currentOrUpcomingIndex + 6);
+}
+
+function renderInsightsPanel(forecast) {
+  const entries = getTodayHourlyEntries(forecast);
+
+  insightsPanel.className = "insights-panel";
+
+  insightsPanel.innerHTML = `
+    <div class="insights-header">
+      <h2 class="insights-title">Hourly Micro-Data Insights</h2>
+      <span class="weather-icon" aria-hidden="true">⌁</span>
+    </div>
+
+    <div class="insight-list">
+      ${entries
+        .map((entry) => {
+          const weatherMeta = getWeatherMeta(entry.weatherCode);
+
+          return `
+            <div class="insight-row">
+              <span class="insight-time">${formatHourLabel(entry.time)}</span>
+              <span class="insight-condition">
+                <span aria-hidden="true">${weatherMeta.icon}</span>
+                ${weatherMeta.label}
+              </span>
+              <span class="insight-temp">${Math.round(entry.temperature)}°C</span>
+            </div>
+          `;
+        })
+        .join("")}
+    </div>
+  `;
+}
+
 async function fetchWeatherForCity(city) {
   setLoading(true);
   setStatus("Loading weather data...");
@@ -189,8 +289,10 @@ async function fetchWeatherForCity(city) {
     console.log("Weather data:", weatherData);
 
     renderCurrentWeather(location, forecast);
-    setStatus("");
+    renderForecastStrip(forecast);
+    renderInsightsPanel(forecast);
     
+    setStatus("");
   } catch (error) {
     console.error(error);
     setStatus(error.message, "error");
