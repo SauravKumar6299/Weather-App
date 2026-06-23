@@ -27,7 +27,19 @@
 
     <main class="app-shell">
       <section class="search-section">
-        <div class="placeholder search-placeholder">Search bar placeholder</div>
+        <form class="search-form" id="searchForm">
+          <label class="sr-only" for="cityInput">Search city</label>
+          <input
+            id="cityInput"
+            class="search-input"
+            type="search"
+            placeholder="Search for a city..."
+            autocomplete="off"
+            required
+          />
+          <button class="search-button" id="searchButton" type="submit">Search</button>
+        </form>
+        <p class="status-message is-hidden" id="statusMessage" aria-live="polite"></p>
       </section>
 
       <section class="weather-card placeholder">
