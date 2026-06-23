@@ -5,16 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weather App</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
     <script src="script.js" defer></script>
   </head>
   <body>
     <header class="site-header">
       <div class="header-inner">
         <a href="#" class="brand">Weather App</a>
-
+        <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-label="Toggle navigation">
+          ☰
+        </button>
         <nav class="nav-links" aria-label="Primary navigation">
-          <a href="#" class="active">Dashboard</a>
-          <a href="#">Map</a>
+          <a href="#" class="active" data-view="dashboard">Dashboard</a>
+          <a href="#" data-view="map">Map</a>
           <a href="#">Education</a>
           <a href="#">Historical</a>
         </nav>
@@ -26,48 +30,61 @@
     </header>
 
     <main class="app-shell">
-      <section class="search-section">
-        <form class="search-form" id="searchForm">
-          <label class="sr-only" for="cityInput">Search city</label>
-          <input
-            id="cityInput"
-            class="search-input"
-            type="search"
-            placeholder="Search for a city..."
-            autocomplete="off"
-            required
-          />
-          <button
-            class="clear-city-button"
-            id="clearCityButton"
-            type="button"
-            aria-label="Clear saved city"
-            hidden
-          >
-            ✕
-          </button>
-          <button class="search-button" id="searchButton" type="submit">Search</button>
-        </form>
-        <p class="status-message is-hidden" id="statusMessage" aria-live="polite"></p>
+      <section class="dashboard-view" id="dashboardView">
+        <section class="search-section">
+          <form class="search-form" id="searchForm">
+            <label class="sr-only" for="cityInput">Search city</label>
+            <input
+              id="cityInput"
+              class="search-input"
+              type="search"
+              placeholder="Search for a city..."
+              autocomplete="off"
+              required
+            />
+            <button
+              class="clear-city-button"
+              id="clearCityButton"
+              type="button"
+              aria-label="Clear saved city"
+              hidden
+            >
+              ✕
+            </button>
+            <button class="search-button" id="searchButton" type="submit">Search</button>
+          </form>
+          <p class="status-message is-hidden" id="statusMessage" aria-live="polite"></p>
+        </section>
+  
+        <section class="weather-card is-empty" id="weatherCard">
+          <p class="empty-card-message">Search for a city to view current weather.</p>
+        </section>
+  
+        <section class="forecast-strip" id="forecastStrip">
+          <article class="forecast-card active">Forecast will appear here</article>
+        </section>
+        
+        <section class="insights-panel placeholder" id="insightsPanel">
+          Hourly micro-data insights will appear here
+        </section>
       </section>
 
-      <section class="weather-card is-empty" id="weatherCard">
-        <p class="empty-card-message">Search for a city to view current weather.</p>
-      </section>
-
-      <section class="forecast-strip" id="forecastStrip">
-        <article class="forecast-card active">Forecast will appear here</article>
-      </section>
-      
-      <section class="insights-panel placeholder" id="insightsPanel">
-        Hourly micro-data insights will appear here
+      <!-- Map View -->
+      <section class="map-view is-hidden" id="mapView">
+        <section class="map-panel">
+          <div class="section-header">
+            <h2>Weather Map</h2>
+            <p>Search a city to center the map on its location.</p>
+          </div>
+          <div id="weatherMap" class="weather-map"></div>
+        </section>
       </section>
     </main>
 
     <footer class="site-footer">
       <div class="footer-inner">
         <strong>Weather App</strong>
-        <p>© 2024 Weather App. Precision Weather Education.</p>
+        <p>© 2026 Weather App. Precision Weather Education.</p>
 
         <nav class="footer-links" aria-label="Footer links">
           <a href="#">Privacy Policy</a>

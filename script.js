@@ -10,9 +10,13 @@ const forecastStrip = document.querySelector("#forecastStrip");
 const insightsPanel = document.querySelector("#insightsPanel");
 const savedTheme = localStorage.getItem("weather-theme");
 const clearCityButton = document.querySelector("#clearCityButton");
+const navToggle = document.querySelector("#navToggle");
 const savedCityKey = "weather-last-city";
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+const navLinks = document.querySelectorAll("[data-view]");
+const dashboardView = document.querySelector("#dashboardView");
+const mapView = document.querySelector("#mapView");
 
 function applyTheme(theme) {
   root.dataset.theme = theme;
@@ -25,6 +29,18 @@ applyTheme(initialTheme);
 toggleButton.addEventListener("click", () => {
   const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
   applyTheme(nextTheme);
+});
+
+navToggle.addEventListener("click", () => {
+  const isOpen = document.body.classList.toggle("nav-open");
+  navToggle.setAttribute("aria-expanded", String(isOpen));
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth >= 480) {
+    document.body.classList.remove("nav-open");
+    navToggle.setAttribute("aria-expanded", "false");
+  }
 });
 
 function setStatus(message, type = "info") {
@@ -282,6 +298,12 @@ function resetDashboard() {
   clearCityButton.hidden = true;
   setStatus("");
 
+  lastLocation = null;
+  if (cityMarker) {
+    cityMarker.remove();
+    cityMarker = null;
+  }
+
   weatherCard.className = "weather-card is-empty";
   weatherCard.innerHTML = `
     <p class="empty-card-message">Search for a city to view current weather.</p>
@@ -313,6 +335,7 @@ async function fetchWeatherForCity(city) {
     renderCurrentWeather(location, forecast);
     renderForecastStrip(forecast);
     renderInsightsPanel(forecast);
+    renderMap(location);
 
     localStorage.setItem(savedCityKey, city);
     cityInput.value = location.name;
@@ -348,3 +371,55 @@ if (savedCity) {
   clearCityButton.hidden = false;
   fetchWeatherForCity(savedCity);
 }
+
+
+let map;
+let cityMarker;
+let lastLocation;
+
+function switchView(view) {
+  dashboardView.classList.toggle("is-hidden", view !== "dashboard");
+  mapView.classList.toggle("is-hidden", view !== "map");
+
+  navLinks.forEach((link) => {
+    link.classList.toggle("active", link.dataset.view === view);
+  });
+
+  if (view === "map" && map) {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 0);
+  }
+}
+
+function renderMap(location) {
+  lastLocation = location;
+
+  const coords = [location.latitude, location.longitude];
+
+  if (!map) {
+    map = L.map("weatherMap").setView(coords, 10);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+    }).addTo(map);
+  } else {
+    map.setView(coords, 10);
+  }
+
+  if (cityMarker) {
+    cityMarker.remove();
+  }
+
+  cityMarker = L.marker(coords)
+    .addTo(map)
+    .bindPopup(`${location.name}, ${location.country}`)
+    .openPopup();
+}
+
+navLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    switchView(link.dataset.view);
+  });
+});
