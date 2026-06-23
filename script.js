@@ -9,6 +9,8 @@ const weatherCard = document.querySelector("#weatherCard");
 const forecastStrip = document.querySelector("#forecastStrip");
 const insightsPanel = document.querySelector("#insightsPanel");
 const savedTheme = localStorage.getItem("weather-theme");
+const clearCityButton = document.querySelector("#clearCityButton");
+const savedCityKey = "weather-last-city";
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
 
@@ -34,6 +36,7 @@ function setStatus(message, type = "info") {
 function setLoading(isLoading) {
   searchButton.disabled = isLoading;
   cityInput.disabled = isLoading;
+  clearCityButton.disabled = isLoading;
   searchButton.textContent = isLoading ? "Searching..." : "Search";
 }
 
@@ -273,6 +276,25 @@ function renderInsightsPanel(forecast) {
   `;
 }
 
+function resetDashboard() {
+  localStorage.removeItem(savedCityKey);
+  cityInput.value = "";
+  clearCityButton.hidden = true;
+  setStatus("");
+
+  weatherCard.className = "weather-card is-empty";
+  weatherCard.innerHTML = `
+    <p class="empty-card-message">Search for a city to view current weather.</p>
+  `;
+
+  forecastStrip.innerHTML = `
+    <article class="forecast-card active">Forecast will appear here</article>
+  `;
+
+  insightsPanel.className = "insights-panel placeholder";
+  insightsPanel.innerHTML = "Hourly micro-data insights will appear here";
+}
+
 async function fetchWeatherForCity(city) {
   setLoading(true);
   setStatus("Loading weather data...");
@@ -291,7 +313,11 @@ async function fetchWeatherForCity(city) {
     renderCurrentWeather(location, forecast);
     renderForecastStrip(forecast);
     renderInsightsPanel(forecast);
-    
+
+    localStorage.setItem(savedCityKey, city);
+    cityInput.value = location.name;
+    clearCityButton.hidden = false;
+
     setStatus("");
   } catch (error) {
     console.error(error);
@@ -301,6 +327,7 @@ async function fetchWeatherForCity(city) {
   }
 }
 
+clearCityButton.addEventListener("click", resetDashboard);
 searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -313,3 +340,11 @@ searchForm.addEventListener("submit", (event) => {
 
   fetchWeatherForCity(city);
 });
+
+const savedCity = localStorage.getItem(savedCityKey);
+
+if (savedCity) {
+  cityInput.value = savedCity;
+  clearCityButton.hidden = false;
+  fetchWeatherForCity(savedCity);
+}

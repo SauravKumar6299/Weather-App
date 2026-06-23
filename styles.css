@@ -503,3 +503,27 @@
     color: var(--color-accent);
     font-weight: 800;
   }
+  .clear-city-button {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 999px;
+    color: var(--color-text-muted);
+    background: var(--color-surface-muted);
+    cursor: pointer;
+  }
+  
+  .clear-city-button:hover,
+  .clear-city-button:focus-visible {
+    color: var(--color-text);
+    background: var(--color-border);
+  }
+  
+  .clear-city-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .clear-city-button[hidden] {
+    display: none;
+  }
