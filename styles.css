@@ -1,0 +1,224 @@
+:root {
+    --color-bg: #eef3f8;
+    --color-surface: #ffffff;
+    --color-surface-muted: #f7f9fc;
+    --color-header: #4d4368;
+    --color-text: #172033;
+    --color-text-muted: #667085;
+    --color-border: #e3e8ef;
+    --color-accent: #008da8;
+    --color-accent-strong: #00768d;
+    --shadow-card: 0 10px 24px rgba(15, 23, 42, 0.08);
+  
+    --radius-lg: 14px;
+    --radius-md: 10px;
+    --max-width: 700px;
+  }
+  
+  [data-theme="dark"] {
+    --color-bg: #111827;
+    --color-surface: #1f2937;
+    --color-surface-muted: #273449;
+    --color-header: #27213f;
+    --color-text: #f8fafc;
+    --color-text-muted: #cbd5e1;
+    --color-border: #334155;
+    --color-accent: #38bdf8;
+    --color-accent-strong: #0ea5e9;
+    --shadow-card: 0 10px 24px rgba(0, 0, 0, 0.28);
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: var(--color-text);
+    background: var(--color-bg);
+    transition: background-color 180ms ease, color 180ms ease;
+  }
+  
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  .site-header {
+    background: var(--color-header);
+    color: white;
+  }
+  
+  .header-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    min-height: 54px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  
+  .brand {
+    font-weight: 700;
+    margin-right: auto;
+  }
+  
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 13px;
+  }
+  
+  .nav-links a {
+    opacity: 0.76;
+    padding: 18px 0;
+  }
+  
+  .nav-links a.active {
+    opacity: 1;
+    border-bottom: 2px solid #ffd166;
+  }
+  
+  .theme-toggle {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 999px;
+    color: white;
+    background: transparent;
+    cursor: pointer;
+  }
+  
+  .theme-toggle:hover,
+  .theme-toggle:focus-visible {
+    background: rgba(255, 255, 255, 0.14);
+    outline: none;
+  }
+  
+  .app-shell {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 32px 18px 36px;
+  }
+  
+  .placeholder,
+  .forecast-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+  
+  .search-section {
+    margin-bottom: 22px;
+  }
+  
+  .search-placeholder {
+    min-height: 48px;
+    display: grid;
+    place-items: center;
+    color: var(--color-text-muted);
+  }
+  
+  .weather-card {
+    min-height: 170px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .forecast-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  
+  .forecast-card {
+    min-height: 86px;
+    padding: 16px 10px;
+    text-align: center;
+    color: var(--color-text-muted);
+  }
+  
+  .forecast-card.active {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+  }
+  
+  .insights-panel {
+    min-height: 210px;
+    padding: 24px;
+  }
+  
+  .site-footer {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+  }
+  
+  .footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 26px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 24px;
+    color: var(--color-text-muted);
+    font-size: 12px;
+  }
+  
+  .footer-inner strong {
+    color: var(--color-text);
+    font-size: 14px;
+  }
+  
+  .footer-inner p {
+    margin: 0;
+  }
+  
+  .footer-links {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  
+  @media (max-width: 480px) {
+    .header-inner {
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-block: 12px;
+    }
+  
+    .nav-links {
+      order: 3;
+      width: 100%;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+    }
+  
+    .forecast-strip {
+      display: flex;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+  
+    .forecast-card {
+      min-width: 110px;
+    }
+  
+    .footer-inner {
+      grid-template-columns: 1fr;
+    }
+  
+    .footer-links {
+      grid-row: auto;
+      grid-column: auto;
+      flex-wrap: wrap;
+    }
+  }
